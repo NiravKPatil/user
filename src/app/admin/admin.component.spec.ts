@@ -1,13 +1,8 @@
 import { AdminComponent } from './admin.component';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Role } from '../models';
 import { UserService } from '../services';
-import 'zone.js';
-import 'zone.js/dist/async-test.js';
-import 'zone.js/dist/proxy.js';
-import 'zone.js/dist/sync-test';
-import 'zone.js/dist/jasmine-patch';
-import { first } from 'rxjs/operators';
+import { Observable, of, pipe } from 'rxjs';
 
 const users = [
   {
@@ -32,31 +27,35 @@ describe('AdminComponent', () => {
   let component: AdminComponent;
   let userServiceMock;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: UserService,
-          useValue: {
-            getAll: jest.fn()
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: UserService,
+            useValue: {
+              getAll: jest.fn()
+            }
           }
-        }
-      ]
-    });
-    component = new AdminComponent(userServiceMock);
+        ]
+      });
+      userServiceMock = TestBed.inject(UserService);
+      component = new AdminComponent(userServiceMock);
+    })
+  );
+
+  it(`Should component defined`, () => {
+    expect(component).toBeDefined();
   });
 
-  describe('Admin Component Start', () => {
-    it(`should call 'ngOnInint' when User Login`, () => {
-      const user = jest.spyOn(component, 'ngOnInit');
-      const service = userServiceMock
-        .getAll()
-        .pipe(first())
-        .subscribe(data => {
-          expect(data).toEqual(users);
-        });
-      component.ngOnInit();
-      expect(user).toHaveBeenCalled();
+  it(`should call 'ngOnInint' when User Login`, done => {
+    jest.spyOn(component['userService'], 'getAll').mockReturnValue(of(users));
+    component.ngOnInit();
+    component['userService'].getAll().subscribe(() => {
+      expect(component.users).toBeDefined();
+      expect(component.users).toEqual(users);
+      expect(component.users.length).toEqual(2);
+      done();
     });
   });
 });
