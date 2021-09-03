@@ -16,6 +16,7 @@ import { LoginComponent } from './login';
 import { AngularMaterialModule } from './common/angular-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { UserComponent } from './user/user.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { UserComponent } from './user/user.component';
     HttpClientModule,
     AppRoutingModule,
     AngularMaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    BrowserAnimationsModule
   ],
   declarations: [
     AppComponent,
