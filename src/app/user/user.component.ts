@@ -1,13 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  NgForm,
+  Validators
+} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { UserService } from '@app/services';
+import { UserService } from '../services';
 import { first } from 'rxjs/operators';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
     const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || isSubmitted)
+    );
   }
 }
 
@@ -17,23 +30,22 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-
-  isEditable : boolean = false;
-  userEditForm : FormGroup;
+  isEditable: boolean = false;
+  userEditForm: FormGroup;
   matcher = new MyErrorStateMatcher();
 
-  constructor(private userService : UserService) { }
+  constructor(private userService: UserService) {}
 
-  users : any = {};
+  users: any = {};
 
   ngOnInit(): void {
     this.users = JSON.parse(localStorage.getItem('user'));
-    this.users !== null ? this.isEditable = false : this.isEditable = true;
+    this.users !== null ? (this.isEditable = false) : (this.isEditable = true);
     this.userEditForm = new FormGroup({
-      username : new FormControl('', [Validators.required]),
-      firstName : new FormControl('', [Validators.required]),
-      lastName : new FormControl('', [Validators.required]),
-      role : new FormControl('')
+      username: new FormControl('', [Validators.required]),
+      firstName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required]),
+      role: new FormControl('')
     });
   }
 
@@ -43,7 +55,7 @@ export class UserComponent implements OnInit {
   }
 
   save() {
-    if(!this.isEditable) {
+    if (!this.isEditable) {
       this.isEditable = true;
       this.userEditForm.patchValue(this.users);
     } else {
@@ -56,5 +68,4 @@ export class UserComponent implements OnInit {
       }
     }
   }
-
 }
